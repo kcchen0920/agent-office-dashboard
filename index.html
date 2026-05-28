@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Office - Minecraft 體素辦公模擬器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Token Alert Banner (dynamically shown) -->
+  <div id="token-alert-banner" class="token-alert-banner danger" style="display: none;">
+    <div class="alert-content">
+      <span class="alert-icon">⚠️</span>
+      <span id="token-alert-text" class="alert-text">警告：Token 消耗即將達到上限！</span>
+    </div>
+    <button class="alert-close-btn" id="token-alert-close">&times;</button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <span>AI AGENT OFFICE</span>
+    </div>
+    <div class="controls">
+      <!-- Token Limit Selector -->
+      <div class="limit-selector-container">
+        <label for="limit-select" class="selector-label">警報閾值:</label>
+        <select id="limit-select" class="theme-select">
+          <option value="100000">100K Tokens</option>
+          <option value="500000">500K Tokens</option>
+          <option value="1000000" selected>1M Tokens (Gemini)</option>
+          <option value="2000000">2M Tokens (Pro)</option>
+        </select>
+      </div>
+
+      <!-- Strategy Selector -->
+      <div class="strategy-selector-container">
+        <label for="strategy-select" class="selector-label">Token 優化策略:</label>
+        <select id="strategy-select" class="theme-select">
+          <option value="none">⛔ 原始歷史 (Full History)</option>
+          <option value="window">✂️ 滑動窗口 (Sliding Window)</option>
+          <option value="prune">🧹 工具輸出裁減 (Tool Pruning)</option>
+          <option value="summarize">📝 記憶摘要化 (Summarization)</option>
+          <option value="cache">⚡ Gemini 脈絡快取 (Context Cache)</option>
+        </select>
+      </div>
+
+      <!-- Desktop Notify Button -->
+      <button id="notify-btn" class="btn btn-notify">
+        <span id="notify-btn-text">🔔 啟用瀏覽器桌面通知</span>
+      </button>
+
+      <div class="status-badge connection-badge" id="conn-badge">
+        <div class="status-dot idle" id="connection-dot"></div>
+        <span id="connection-status-text">🔴 未連線</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="app-container">
+
+    <!-- Left Sidebar: Active Agents -->
+    <aside class="sidebar">
+      <div class="section-title">
+        <span>辦公室成員</span>
+        <span class="agent-count">4 名</span>
+      </div>
+
+      <!-- Agent 1: Manager -->
+      <div class="agent-card manager" data-agent="manager">
+        <div class="agent-header">
+          <div class="agent-info">
+            <div class="agent-avatar-img" style="border-radius: 8px; width: 42px; height: 42px; background: rgba(0,0,0,0.03); padding: 2px; border: 1px solid var(--neon-purple);">
+              <svg viewBox="-15 -27 30 30" style="width: 100%; height: 100%; display: block;">
+                <polygon points="-9,-15 0,-20 9,-15 0,-10" fill="#c084fc" />
+                <polygon points="-9,-15 0,-10 0,0 -9,-5" fill="#a78bfa" />
+                <polygon points="0,-10 9,-15 9,-5 0,0" fill="#7c3aed" />
+                <path d="M -9,-9 Q 0,-23 9,-9" fill="none" stroke="#1e293b" stroke-width="3" />
+                <circle cx="-9" cy="-8" r="3.5" fill="#10b981" />
+                <circle cx="9" cy="-8" r="3.5" fill="#10b981" />
+                <rect x="-6" y="-8" width="1.8" height="3" fill="#000000" />
+                <rect x="-1" y="-7.5" width="1.8" height="3" fill="#000000" />
+              </svg>
+            </div>
+            <div class="agent-meta">
+              <h3>Antigravity</h3>
+              <p>Manager / 主代理</p>
+            </div>
+          </div>
+          <div class="status-badge">
+            <div class="status-dot thinking" id="status-manager"></div>
+            <span id="text-manager">Thinking</span>
+          </div>
+        </div>
+        <div class="agent-stats">
+          <div class="stat-item">
+            <span class="stat-label">呼叫次數</span>
+            <span class="stat-value" id="stats-calls-manager">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-value" id="stats-tokens-manager">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 2: Researcher -->
+      <div class="agent-card researcher" data-agent="researcher">
+        <div class="agent-header">
+          <div class="agent-info">
+            <div class="agent-avatar-img" style="border-radius: 8px; width: 42px; height: 42px; background: rgba(0,0,0,0.03); padding: 2px; border: 1px solid var(--neon-cyan);">
+              <svg viewBox="-15 -27 30 30" style="width: 100%; height: 100%; display: block;">
+                <polygon points="-9,-15 0,-20 9,-15 0,-10" fill="#fed7aa" />
+                <polygon points="-9,-15 0,-10 0,0 -9,-5" fill="#ffedd5" />
+                <polygon points="0,-10 9,-15 9,-5 0,0" fill="#f97316" />
+                <polygon points="-15,-13 -3,-18 12,-13 0,-8" fill="#7c2d12" />
+                <polygon points="-8,-18 0,-21 8,-18 0,-15" fill="#9a3412" />
+                <polygon points="-8,-18 0,-15 0,-21 -8,-24" fill="#7c2d12" />
+                <polygon points="0,-15 8,-18 8,-24 0,-21" fill="#431407" />
+                <rect x="-6" y="-8" width="1.8" height="3" fill="#000000" />
+                <rect x="-1" y="-7.5" width="1.8" height="3" fill="#000000" />
+              </svg>
+            </div>
+            <div class="agent-meta">
+              <h3>research</h3>
+              <p>Researcher / 研究代理</p>
+            </div>
+          </div>
+          <div class="status-badge">
+            <div class="status-dot idle" id="status-researcher"></div>
+            <span id="text-researcher">Idle</span>
+          </div>
+        </div>
+        <div class="agent-stats">
+          <div class="stat-item">
+            <span class="stat-label">呼叫次數</span>
+            <span class="stat-value" id="stats-calls-researcher">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-value" id="stats-tokens-researcher">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 3: Developer -->
+      <div class="agent-card developer" data-agent="developer">
+        <div class="agent-header">
+          <div class="agent-info">
+            <div class="agent-avatar-img" style="border-radius: 8px; width: 42px; height: 42px; background: rgba(0,0,0,0.03); padding: 2px; border: 1px solid var(--neon-emerald);">
+              <svg viewBox="-15 -27 30 30" style="width: 100%; height: 100%; display: block;">
+                <polygon points="-9,-15 0,-20 9,-15 0,-10" fill="#a7f3d0" />
+                <polygon points="-9,-15 0,-10 0,0 -9,-5" fill="#f0fdf4" />
+                <polygon points="0,-10 9,-15 9,-5 0,0" fill="#10b981" />
+                <rect x="-7" y="-9" width="6" height="4.5" fill="none" stroke="#1e293b" stroke-width="2" />
+                <rect x="-1" y="-8.5" width="6" height="4.5" fill="none" stroke="#1e293b" stroke-width="2" />
+                <line x1="-7" y1="-7" x2="5" y2="-7" stroke="#1e293b" stroke-width="1.2" />
+                <rect x="-6" y="-8" width="1.5" height="1.5" fill="#000000" />
+                <rect x="0" y="-7.5" width="1.5" height="1.5" fill="#000000" />
+              </svg>
+            </div>
+            <div class="agent-meta">
+              <h3>self</h3>
+              <p>Developer / 開發代理</p>
+            </div>
+          </div>
+          <div class="status-badge">
+            <div class="status-dot idle" id="status-developer"></div>
+            <span id="text-developer">Idle</span>
+          </div>
+        </div>
+        <div class="agent-stats">
+          <div class="stat-item">
+            <span class="stat-label">呼叫次數</span>
+            <span class="stat-value" id="stats-calls-developer">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-value" id="stats-tokens-developer">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 4: QA -->
+      <div class="agent-card qa" data-agent="qa">
+        <div class="agent-header">
+          <div class="agent-info">
+            <div class="agent-avatar-img" style="border-radius: 8px; width: 42px; height: 42px; background: rgba(0,0,0,0.03); padding: 2px; border: 1px solid var(--neon-rose);">
+              <svg viewBox="-15 -27 30 30" style="width: 100%; height: 100%; display: block;">
+                <polygon points="-9,-15 0,-20 9,-15 0,-10" fill="#fce7f3" />
+                <polygon points="-9,-15 0,-10 0,0 -9,-5" fill="#fff1f2" />
+                <polygon points="0,-10 9,-15 9,-5 0,0" fill="#ec4899" />
+                <rect x="-6" y="-8" width="1.8" height="3" fill="#000000" />
+                <rect x="-1" y="-7.5" width="1.8" height="3" fill="#000000" />
+              </svg>
+            </div>
+            <div class="agent-meta">
+              <h3>qa_agent</h3>
+              <p>QA Tester / 測試代理</p>
+            </div>
+          </div>
+          <div class="status-badge">
+            <div class="status-dot idle" id="status-qa"></div>
+            <span id="text-qa">Idle</span>
+          </div>
+        </div>
+        <div class="agent-stats">
+          <div class="stat-item">
+            <span class="stat-label">呼叫次數</span>
+            <span class="stat-value" id="stats-calls-qa">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-value" id="stats-tokens-qa">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Savings Card -->
+      <div class="savings-card">
+        <div class="section-title savings-header">
+          <span>Token 優化效益</span>
+          <span id="savings-rate">0%</span>
+        </div>
+        <div class="agent-stats savings-stats">
+          <div class="savings-stat-row">
+            <span class="savings-label">原始消耗:</span>
+            <span id="stats-raw-tokens" class="savings-value">0</span>
+          </div>
+          <div class="savings-stat-row">
+            <span class="savings-label">優化實際:</span>
+            <span id="stats-optimized-tokens" class="savings-value optimized">0</span>
+          </div>
+          <div class="savings-stat-row">
+            <span class="savings-label">節省 Tokens:</span>
+            <span id="stats-saved-tokens" class="savings-value saved">0</span>
+          </div>
+          <div class="savings-stat-row cost-row">
+            <span class="savings-label">預估節省金額:</span>
+            <span id="stats-saved-cost" class="savings-value cost">$0.00 USD</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace (Voxel Office Sim) -->
+    <main class="center-panel">
+      <!-- 1. Office Map -->
+      <div class="graph-container">
+        <div class="section-title graph-title">
+          <span>虛擬方塊辦公模擬器 (Voxel Office Simulator)</span>
+        </div>
+        <svg class="graph-svg" id="topology-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+          <!-- Definitions for markers, patterns and gradients -->
+          <defs>
+            <!-- Floor pattern for realistic tiles -->
+            <pattern id="floor-tile" width="25" height="25" patternUnits="userSpaceOnUse">
+              <rect width="25" height="25" fill="#fafbfc" />
+              <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#eceef2" stroke-width="0.8"/>
+            </pattern>
+            <!-- Glass gradient -->
+            <linearGradient id="glass-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(255, 255, 255, 0.6)" />
+              <stop offset="100%" stop-color="rgba(186, 230, 253, 0.3)" />
+            </linearGradient>
+            <!-- Wooden desk gradient -->
+            <linearGradient id="wood-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fcd34d" />
+              <stop offset="100%" stop-color="#d97706" />
+            </linearGradient>
+            <!-- Sofa teal gradient -->
+            <linearGradient id="sofa-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a5f3fc" />
+              <stop offset="100%" stop-color="#0891b2" />
+            </linearGradient>
+            <!-- Filter to key out black background and keep color pixels opaque -->
+            <filter id="key-black">
+              <feColorMatrix type="matrix" values="1 0 0 0 0
+                                                   0 1 0 0 0
+                                                   0 0 1 0 0
+                                                   10 10 10 0 -0.2" />
+            </filter>
+          </defs>
+
+          <!-- Floor grid -->
+          <rect x="5" y="5" width="590" height="290" fill="url(#floor-tile)" rx="10" class="office-floor" />
+
+          <!-- Office partitions & Walls with Doors -->
+          <g class="office-walls">
+            <!-- Outer border -->
+            <rect x="5" y="5" width="590" height="290" rx="10" class="wall outer-wall" />
+            
+            <!-- Room Dividers -->
+            <!-- Meeting Room (Center-Top): 200,15 to 400,105 -->
+            <path d="M 200 15 L 200 105 L 260 105 M 300 105 L 400 105 L 400 15" class="wall room-wall" />
+            <!-- Door swing for Meeting Room (Door size 40, from 260 to 300) -->
+            <path d="M 260 105 A 40 40 0 0 0 300 145" class="door-swing" />
+            <line x1="260" y1="105" x2="300" y2="145" class="door" />
+
+            <!-- Research Lab (Left-Top): 15,15 to 185,125 -->
+            <path d="M 185 15 L 185 55 M 185 95 L 185 125 L 15 125" class="wall room-wall" />
+            <!-- Door swing for Research Lab (Door size 40, from 55 to 95) -->
+            <path d="M 185 95 A 40 40 0 0 0 225 95" class="door-swing" />
+            <line x1="185" y1="95" x2="225" y2="95" class="door" />
+
+            <!-- Dev Zone (Right-Top): 415,15 to 585,125 -->
+            <path d="M 415 15 L 415 55 M 415 95 L 415 125 L 585 125" class="wall room-wall" />
+            <!-- Door swing for Dev Zone (Door size 40, from 55 to 95) -->
+            <path d="M 415 95 A 40 40 0 0 1 375 95" class="door-swing" />
+            <line x1="415" y1="95" x2="375" y2="95" class="door" />
+
+            <!-- QA Lab (Center-Bottom): 200,180 to 400,285 -->
+            <path d="M 200 285 L 200 180 L 260 180 M 300 180 L 400 180 L 400 285" class="wall room-wall" />
+            <!-- Door swing for QA Lab (Door size 40, from 260 to 300) -->
+            <path d="M 260 180 A 40 40 0 0 1 300 140" class="door-swing" />
+            <line x1="260" y1="180" x2="300" y2="140" class="door" />
+
+            <!-- Lounge (Left-Bottom): 15,180 to 185,285 -->
+            <path d="M 185 285 L 185 240 M 185 200 L 185 180 L 15 180" class="wall room-wall" />
+            <!-- Door swing for Lounge (Door size 40, from 200 to 240) -->
+            <path d="M 185 200 A 40 40 0 0 1 225 200" class="door-swing" />
+            <line x1="185" y1="200" x2="225" y2="200" class="door" />
+          </g>
+
+          <!-- Office furniture & detailed objects -->
+          <g class="office-furniture">
+            
+            <!-- ================= MEETING ROOM ================= -->
+            <!-- Meeting Table (Wood grain with glass insert) -->
+            <rect x="235" y="30" width="130" height="45" rx="6" class="furniture table wood-furniture" />
+            <rect x="245" y="35" width="110" height="35" rx="3" fill="url(#glass-grad)" stroke="rgba(255,255,255,0.4)" />
+            <!-- Center Conference Phone -->
+            <polygon points="295,55 305,55 302,48 298,48" fill="#475569" stroke="#1e293b" stroke-width="0.5" />
+            <!-- Meeting Chairs (Detailed backrests, seats, bases) -->
+            <!-- Top chairs -->
+            <g class="chair-group"><rect x="250" y="16" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="258" y1="28" x2="258" y2="30" stroke="#64748b" /><circle cx="258" cy="18" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="280" y="16" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="288" y1="28" x2="288" y2="30" stroke="#64748b" /><circle cx="288" cy="18" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="310" y="16" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="318" y1="28" x2="318" y2="30" stroke="#64748b" /><circle cx="318" cy="18" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="340" y="16" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="348" y1="28" x2="348" y2="30" stroke="#64748b" /><circle cx="348" cy="18" r="3" class="furniture chair-head" /></g>
+            <!-- Bottom chairs -->
+            <g class="chair-group"><rect x="250" y="78" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="258" y1="75" x2="258" y2="78" stroke="#64748b" /><circle cx="258" cy="85" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="280" y="78" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="288" y1="75" x2="288" y2="78" stroke="#64748b" /><circle cx="288" cy="85" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="310" y="78" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="318" y1="75" x2="318" y2="78" stroke="#64748b" /><circle cx="318" cy="85" r="3" class="furniture chair-head" /></g>
+            <g class="chair-group"><rect x="340" y="78" width="16" height="12" rx="3" class="furniture chair seat" /><line x1="348" y1="75" x2="348" y2="78" stroke="#64748b" /><circle cx="348" cy="85" r="3" class="furniture chair-head" /></g>
+            <!-- PM Swivel Chair (At Head of Table x=300, y=45) -->
+            <g class="chair-group swivel-chair" id="pm-chair-svg">
+              <path d="M 290 45 L 310 45 M 300 35 L 300 55" stroke="#94a3b8" stroke-width="1.5" />
+              <rect x="288" y="38" width="24" height="14" rx="4" class="furniture chair seat executive" />
+              <rect x="288" y="32" width="24" height="6" rx="2" class="furniture chair back executive" />
+              <path d="M 286 36 L 286 46 M 314 36 L 314 46" stroke="#475569" stroke-width="1.5" />
+            </g>
+
+            <!-- ================= RESEARCH LAB ================= -->
+            <!-- Research Table -->
+            <rect x="75" y="45" width="80" height="35" rx="4" class="furniture desk wood-furniture" />
+            <!-- Desk Laptop & Mug -->
+            <rect x="105" y="48" width="20" height="14" rx="1" fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.5" />
+            <rect x="107" y="44" width="16" height="4" fill="#38bdf8" />
+            <line x1="107" y1="58" x2="123" y2="58" stroke="#334155" stroke-dasharray="1 1" />
+            <circle cx="132" cy="55" r="3" fill="#f97316" />
+            <path d="M 135 53 A 2 2 0 0 1 135 57" stroke="#f97316" stroke-width="0.8" fill="none" />
+            <!-- Ergonomic Chair for Researcher (x=115, y=70) -->
+            <g class="chair-group swivel-chair">
+              <path d="M 107 70 L 123 70 M 115 62 L 115 78" stroke="#94a3b8" stroke-width="1.2" />
+              <rect x="105" y="63" width="20" height="14" rx="4" class="furniture chair seat" />
+              <rect x="105" y="58" width="20" height="5" rx="1.5" class="furniture chair back" />
+            </g>
+            <!-- Bookshelf 1 (Top Left) with individual books -->
+            <g class="bookcase-group">
+              <rect x="20" y="20" width="16" height="55" class="furniture bookcase" />
+              <!-- Shelf Lines -->
+              <line x1="20" y1="38" x2="36" y2="38" stroke="#d97706" />
+              <line x1="20" y1="56" x2="36" y2="56" stroke="#d97706" />
+              <!-- Books Shelf 1 -->
+              <rect x="22" y="24" width="3" height="13" fill="#ef4444" />
+              <rect x="25" y="28" width="2.5" height="9" fill="#3b82f6" />
+              <rect x="28" y="22" width="3" height="15" fill="#10b981" />
+              <rect x="31" y="26" width="3" height="11" fill="#f59e0b" />
+              <!-- Books Shelf 2 -->
+              <rect x="22" y="42" width="3" height="13" fill="#8b5cf6" />
+              <rect x="25" y="45" width="3" height="10" fill="#ec4899" />
+              <line x1="31" y1="55" x2="33" y2="42" stroke="#06b6d4" stroke-width="3" />
+              <!-- Books Shelf 3 -->
+              <rect x="22" y="60" width="2.5" height="11" fill="#3b82f6" />
+              <rect x="25" y="59" width="3" height="12" fill="#10b981" />
+              <rect x="29" y="62" width="2.5" height="9" fill="#ef4444" />
+            </g>
+            <!-- Bookshelf 2 (Lower Left) with books and hanging plant -->
+            <g class="bookcase-group">
+              <rect x="20" y="80" width="35" height="16" class="furniture bookcase" />
+              <line x1="37" y1="80" x2="37" y2="96" stroke="#d97706" />
+              <!-- Books Shelf Left -->
+              <rect x="23" y="83" width="3" height="11" fill="#10b981" />
+              <rect x="27" y="81" width="3.5" height="13" fill="#f59e0b" />
+              <line x1="33" y1="94" x2="35" y2="82" stroke="#ef4444" stroke-width="3" />
+              <!-- Books Shelf Right -->
+              <rect x="40" y="84" width="3" height="10" fill="#3b82f6" />
+              <rect x="44" y="82" width="2.5" height="12" fill="#8b5cf6" />
+              <rect x="48" y="85" width="3" height="9" fill="#06b6d4" />
+              <!-- Hanging plant pot on bookcase shelf -->
+              <polygon points="31,80 35,80 34,84 32,84" fill="url(#plant-pot)" />
+              <path d="M 33 84 Q 28 92 27 96 M 33 84 Q 38 90 41 94 M 33 84 Q 33 93 32 98" fill="none" stroke="#22c55e" stroke-width="1.2" />
+            </g>
+
+            <!-- ================= DEV ZONE ================= -->
+            <!-- Dev Desk 1 (With dual monitors, keyboard, mouse, mug) -->
+            <rect x="435" y="40" width="70" height="35" rx="4" class="furniture desk wood-furniture" />
+            <!-- Dual Monitors angled -->
+            <line x1="445" y1="44" x2="468" y2="40" stroke="#1e293b" stroke-width="1.5" />
+            <line x1="445" y1="44" x2="468" y2="40" stroke="#38bdf8" stroke-width="0.8" />
+            <line x1="472" y1="40" x2="495" y2="44" stroke="#1e293b" stroke-width="1.5" />
+            <line x1="472" y1="40" x2="495" y2="44" stroke="#38bdf8" stroke-width="0.8" />
+            <!-- Keyboard & Mouse -->
+            <rect x="458" y="49" width="24" height="6" rx="1" fill="#475569" />
+            <line x1="460" y1="52" x2="480" y2="52" stroke="#94a3b8" stroke-dasharray="1 1" />
+            <ellipse cx="488" cy="52" rx="1.5" ry="2.2" fill="#cbd5e1" />
+            <!-- Coffee Mug -->
+            <circle cx="445" cy="56" r="3.2" fill="#ef4444" />
+            <path d="M 442 54 A 2 2 0 0 0 442 58" stroke="#ef4444" stroke-width="0.8" fill="none" />
+            <!-- Developer 1 Swivel Chair (x=470, y=65) -->
+            <g class="chair-group swivel-chair">
+              <path d="M 462 65 L 478 65 M 470 57 L 470 73" stroke="#94a3b8" stroke-width="1.2" />
+              <rect x="460" y="58" width="20" height="14" rx="4" class="furniture chair seat" />
+              <rect x="460" y="53" width="20" height="5" rx="1.5" class="furniture chair back" />
+            </g>
+
+            <!-- Dev Desk 2 -->
+            <rect x="510" y="40" width="70" height="35" rx="4" class="furniture desk wood-furniture" />
+            <!-- Dual Monitors angled -->
+            <line x1="520" y1="44" x2="543" y2="40" stroke="#1e293b" stroke-width="1.5" />
+            <line x1="520" y1="44" x2="543" y2="40" stroke="#a855f7" stroke-width="0.8" />
+            <line x1="547" y1="40" x2="570" y2="44" stroke="#1e293b" stroke-width="1.5" />
+            <line x1="547" y1="40" x2="570" y2="44" stroke="#a855f7" stroke-width="0.8" />
+            <!-- Keyboard & Mouse -->
+            <rect x="533" y="49" width="24" height="6" rx="1" fill="#475569" />
+            <line x1="535" y1="52" x2="555" y2="52" stroke="#94a3b8" stroke-dasharray="1 1" />
+            <ellipse cx="563" cy="52" rx="1.5" ry="2.2" fill="#cbd5e1" />
+            <!-- Mug -->
+            <circle cx="520" cy="56" r="3.2" fill="#06b6d4" />
+            <!-- Developer 2 Swivel Chair (x=550, y=65) -->
+            <g class="chair-group swivel-chair">
+              <path d="M 542 65 L 558 65 M 550 57 L 550 73" stroke="#94a3b8" stroke-width="1.2" />
+              <rect x="540" y="58" width="20" height="14" rx="4" class="furniture chair seat" />
+              <rect x="540" y="53" width="20" height="5" rx="1.5" class="furniture chair back" />
+            </g>
+
+            <!-- ================= QA LAB ================= -->
+            <!-- QA Server Rack (detailed cage structure with glowing fiber lights) -->
+            <g class="server-rack-group">
+              <rect x="215" y="200" width="40" height="70" rx="5" class="furniture server-rack" />
+              <!-- Glass front panel doors -->
+              <rect x="218" y="203" width="34" height="64" fill="rgba(15, 23, 42, 0.9)" stroke="#475569" stroke-width="1" />
+              <!-- Internal server blade trays -->
+              <line x1="219" y1="210" x2="251" y2="210" stroke="#334155" />
+              <line x1="219" y1="220" x2="251" y2="220" stroke="#334155" />
+              <line x1="219" y1="230" x2="251" y2="230" stroke="#334155" />
+              <line x1="219" y1="240" x2="251" y2="240" stroke="#334155" />
+              <line x1="219" y1="250" x2="251" y2="250" stroke="#334155" />
+              <line x1="219" y1="260" x2="251" y2="260" stroke="#334155" />
+              <!-- Cable wires dangling -->
+              <path d="M 223 210 Q 227 225 224 240 T 223 260" fill="none" stroke="#38bdf8" stroke-width="0.8" />
+              <path d="M 245 210 Q 242 225 246 240 T 244 260" fill="none" stroke="#f59e0b" stroke-width="0.8" />
+              <!-- Blink LEDs -->
+              <circle cx="249" cy="215" r="1.5" class="server-light server-light-green" />
+              <circle cx="249" cy="225" r="1.5" class="server-light server-light-red" />
+              <circle cx="249" cy="235" r="1.5" class="server-light server-light-green" />
+              <circle cx="249" cy="245" r="1.5" class="server-light server-light-green" />
+              <circle cx="249" cy="255" r="1.5" class="server-light server-light-red" />
+            </g>
+            <!-- QA Tester Desk -->
+            <rect x="275" y="200" width="90" height="35" rx="4" class="furniture desk wood-furniture" />
+            <!-- Oscilloscope details -->
+            <rect x="282" y="204" width="22" height="12" fill="#334155" stroke="#1e293b" stroke-width="0.5" />
+            <rect x="284" y="206" width="10" height="8" fill="#10b981" opacity="0.85" />
+            <path d="M 284 210 L 287 207 L 290 211 L 293 208" fill="none" stroke="#022c22" stroke-width="0.8" />
+            <circle cx="298" cy="208" r="1.5" fill="#f59e0b" />
+            <circle cx="298" cy="212" r="1.5" fill="#ef4444" />
+            <!-- Keyboard & Laptop -->
+            <rect x="312" y="206" width="18" height="11" rx="1" fill="#cbd5e1" />
+            <!-- QA Swivel Chair (x=330, y=220) -->
+            <g class="chair-group swivel-chair">
+              <path d="M 322 220 L 338 220 M 330 212 L 330 228" stroke="#94a3b8" stroke-width="1.2" />
+              <rect x="320" y="213" width="20" height="14" rx="4" class="furniture chair seat" />
+              <rect x="320" y="208" width="20" height="5" rx="1.5" class="furniture chair back" />
+            </g>
+
+            <!-- ================= COFFEE LOUNGE ================= -->
+            <!-- L-shaped Pantry Counter -->
+            <g class="pantry-counter-group">
+              <rect x="100" y="190" width="75" height="25" rx="3" class="furniture desk pantry-counter" />
+              <rect x="150" y="215" width="25" height="30" rx="3" class="furniture desk pantry-counter" />
+              <!-- Coffee Espresso Machine -->
+              <g class="coffee-machine-details">
+                <rect x="106" y="192" width="18" height="18" rx="2" fill="#334155" stroke="#1e293b" stroke-width="0.5" />
+                <rect x="110" y="203" width="10" height="6" fill="#111827" />
+                <!-- Glass Carafe with coffee -->
+                <circle cx="115" cy="206" r="3.2" fill="rgba(255, 255, 255, 0.8)" stroke="#64748b" stroke-width="0.5" />
+                <rect x="113.5" y="204.5" width="3" height="3" fill="#451a03" />
+                <!-- Steam lines -->
+                <path d="M 115 191 Q 113 188 115 186 T 115 182" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.6" />
+              </g>
+              <!-- Water Dispenser -->
+              <g class="water-dispenser-details">
+                <rect x="154" y="196" width="16" height="22" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5" />
+                <!-- Blue water bottle -->
+                <path d="M 154 196 Q 162 178 170 196 Z" fill="rgba(14, 165, 233, 0.7)" stroke="#0284c7" stroke-width="0.5" />
+                <!-- Water taps -->
+                <line x1="158" y1="208" x2="158" y2="211" stroke="#3b82f6" stroke-width="1.5" />
+                <line x1="166" y1="208" x2="166" y2="211" stroke="#ef4444" stroke-width="1.5" />
+              </g>
+            </g>
+            <!-- L-shaped Cozy Fabric Sofa -->
+            <g class="cozy-sofa-group">
+              <!-- Sofa base -->
+              <path d="M 22 192 L 46 192 L 46 228 L 95 228 L 95 252 L 22 252 Z" fill="url(#sofa-grad)" stroke="#0891b2" stroke-width="1" />
+              <!-- Back cushions -->
+              <rect x="22" y="192" width="6" height="60" rx="2" fill="rgba(0,0,0,0.1)" />
+              <rect x="22" y="246" width="73" height="6" rx="2" fill="rgba(0,0,0,0.1)" />
+              <!-- Arm cushions -->
+              <rect x="22" y="192" width="24" height="6" rx="2" fill="rgba(255,255,255,0.2)" />
+              <rect x="89" y="228" width="6" height="24" rx="2" fill="rgba(255,255,255,0.2)" />
+            </g>
+            <!-- Coffee Table with Mugs & Tiny Succulent (x=110, y=235) -->
+            <g class="coffee-table-group">
+              <circle cx="110" cy="235" r="16" fill="#fcd34d" stroke="#d97706" stroke-width="1.5" />
+              <circle cx="110" cy="235" r="13" fill="#fcd34d" stroke="rgba(255,255,255,0.4)" stroke-dasharray="1 3" />
+              <!-- Small cups -->
+              <circle cx="106" cy="230" r="2.5" fill="#3b82f6" />
+              <circle cx="114" cy="240" r="2.5" fill="#ef4444" />
+              <!-- Tiny Succulent -->
+              <circle cx="110" cy="234" r="2" fill="url(#plant-pot)" />
+              <circle cx="110" cy="234" r="1" fill="#22c55e" />
+            </g>
+
+            <!-- ================= POTTED PLANTS (VIBRANT GREENERY) ================= -->
+            <!-- Plant 1: Hall Corridor (x=205, y=140) -->
+            <g class="potted-plant">
+              <polygon points="198,148 206,148 204,142 200,142" fill="url(#plant-pot)" stroke="#b45309" stroke-width="0.5" />
+              <!-- Leaves overlapping -->
+              <path d="M 202 142 C 196 134 190 140 192 143 C 195 145 200 142 202 142 Z" fill="#22c55e" />
+              <path d="M 202 142 C 208 134 214 140 212 143 C 209 145 204 142 202 142 Z" fill="#16a34a" />
+              <path d="M 202 142 C 202 130 205 132 204 135 C 203 138 202 141 202 142 Z" fill="#4ade80" />
+            </g>
+
+            <!-- Plant 2: Hall Corridor Right (x=405, y=140) -->
+            <g class="potted-plant">
+              <polygon points="398,148 406,148 404,142 400,142" fill="url(#plant-pot)" stroke="#b45309" stroke-width="0.5" />
+              <path d="M 402 142 C 396 134 390 140 392 143 C 395 145 400 142 402 142 Z" fill="#22c55e" />
+              <path d="M 402 142 C 408 134 414 140 412 143 C 409 145 404 142 402 142 Z" fill="#16a34a" />
+              <path d="M 402 142 C 402 130 405 132 404 135 C 403 138 402 141 402 142 Z" fill="#4ade80" />
+            </g>
+            
+          </g>
+
+          <!-- Office labels (Vibrant, high legibility) -->
+          <g class="room-labels">
+            <text x="300" y="95" class="room-label">會議室 / 經理席</text>
+            <text x="100" y="113" class="room-label">資料庫與研究</text>
+            <text x="500" y="113" class="room-label">程式開發區</text>
+            <text x="335" y="194" class="room-label">測試與除錯中心</text>
+            <text x="100" y="174" class="room-label">休閒茶水間</text>
+          </g>
+
+          <!-- Interactive Character Elements (without outer borders, styled as corporate voxel agents) -->
+          <!-- PM (Antigravity) -->
+          <g class="office-char manager" id="char-manager" style="transform: translate(300px, 45px);">
+            <!-- 3D PM Vector Character -->
+            <g class="char-sprite-3d">
+              <!-- Legs -->
+              <polygon points="-4,2 -1,3 -1,10 -4,9" fill="#475569" />
+              <polygon points="-1,3 1,2 1,9 -1,10" fill="#334155" />
+              <polygon points="1,2 4,3 4,10 1,9" fill="#475569" />
+              <polygon points="4,3 6,2 6,9 4,10" fill="#334155" />
+              <!-- Body (Cube) -->
+              <polygon points="-7,-15 0,-18 7,-15 0,-12" fill="#94a3b8" />
+              <polygon points="-7,-15 0,-12 0,2 -7,-1" fill="#475569" />
+              <polygon points="0,-12 7,-15 7,-1 0,2" fill="#1e293b" />
+              <!-- Red Tie & White Shirt detail -->
+              <polygon points="-1.5,-12.5 1.5,-13.5 0,-7" fill="#ffffff" />
+              <polygon points="-0.8,-11 0.8,-11.5 0,-3" fill="#ef4444" />
+              <!-- Arms -->
+              <polygon points="-10,-14 -7,-13 -7,-4 -10,-5" fill="#475569" />
+              <polygon points="7,-13 10,-14 10,-5 7,-4" fill="#1e293b" />
+              <!-- Head (Cube) -->
+              <polygon points="-6,-25 0,-28 6,-25 0,-22" fill="#c084fc" />
+              <polygon points="-6,-25 0,-22 0,-15 -6,-18" fill="#a78bfa" />
+              <polygon points="0,-22 6,-25 6,-18 0,-15" fill="#7c3aed" />
+              <!-- Headphone Band -->
+              <path d="M -6,-21 Q 0,-30 6,-21" fill="none" stroke="#1e293b" stroke-width="2.5" />
+              <circle cx="-6" cy="-20" r="2.5" fill="#10b981" />
+              <circle cx="6" cy="-20" r="2.5" fill="#10b981" />
+              <!-- Eyes -->
+              <rect x="-4" y="-20" width="1.2" height="2" fill="#000000" />
+              <rect x="-1" y="-19.5" width="1.2" height="2" fill="#000000" />
+            </g>
+            <text class="char-name" y="22">Antigravity</text>
+            <text class="char-status-tag" y="-36" id="tag-manager">Idle</text>
+          </g>
+
+          <!-- Researcher (research) -->
+          <g class="office-char researcher" id="char-researcher" style="transform: translate(115px, 70px);">
+            <!-- 3D Researcher Vector Character -->
+            <g class="char-sprite-3d">
+              <!-- Legs -->
+              <polygon points="-4,2 -1,3 -1,10 -4,9" fill="#d97706" />
+              <polygon points="-1,3 1,2 1,9 -1,10" fill="#b45309" />
+              <polygon points="1,2 4,3 4,10 1,9" fill="#d97706" />
+              <polygon points="4,3 6,2 6,9 4,10" fill="#b45309" />
+              <!-- Body (Cube, brown coat) -->
+              <polygon points="-7,-15 0,-18 7,-15 0,-12" fill="#f59e0b" />
+              <polygon points="-7,-15 0,-12 0,2 -7,-1" fill="#b45309" />
+              <polygon points="0,-12 7,-15 7,-1 0,2" fill="#78350f" />
+              <!-- Buttons detail -->
+              <circle cx="-3" cy="-7" r="0.8" fill="#1e293b" />
+              <circle cx="-3" cy="-3" r="0.8" fill="#1e293b" />
+              <!-- Arms -->
+              <polygon points="-10,-14 -7,-13 -7,-4 -10,-5" fill="#b45309" />
+              <polygon points="7,-13 10,-14 10,-5 7,-4" fill="#78350f" />
+              <!-- Magnifier -->
+              <line x1="8" y1="-4" x2="12" y2="-1" stroke="#cbd5e1" stroke-width="1.5" />
+              <circle cx="13" cy="0" r="2.5" fill="rgba(14, 165, 233, 0.4)" stroke="#cbd5e1" stroke-width="0.8" />
+              <!-- Head (Cube) -->
+              <polygon points="-6,-25 0,-28 6,-25 0,-22" fill="#fed7aa" />
+              <polygon points="-6,-25 0,-22 0,-15 -6,-18" fill="#ffedd5" />
+              <polygon points="0,-22 6,-25 6,-18 0,-15" fill="#f97316" />
+              <!-- Detective Hat -->
+              <polygon points="-10,-24 -2,-27 8,-24 0,-21" fill="#7c2d12" />
+              <polygon points="-5,-27 0,-29 5,-27 0,-25" fill="#9a3412" />
+              <polygon points="-5,-27 0,-25 0,-29 -5,-31" fill="#7c2d12" />
+              <polygon points="0,-25 5,-27 5,-31 0,-29" fill="#431407" />
+              <!-- Eyes -->
+              <rect x="-4" y="-20" width="1.2" height="2" fill="#000000" />
+              <rect x="-1" y="-19.5" width="1.2" height="2" fill="#000000" />
+            </g>
+            <text class="char-name" y="22">research</text>
+            <text class="char-status-tag" y="-36" id="tag-researcher">Idle</text>
+          </g>
+
+          <!-- Developer (self) -->
+          <g class="office-char developer" id="char-developer" style="transform: translate(470px, 65px);">
+            <!-- 3D Developer Vector Character -->
+            <g class="char-sprite-3d">
+              <!-- Legs -->
+              <polygon points="-4,2 -1,3 -1,10 -4,9" fill="#1e293b" />
+              <polygon points="-1,3 1,2 1,9 -1,10" fill="#0f172a" />
+              <polygon points="1,2 4,3 4,10 1,9" fill="#1e293b" />
+              <polygon points="4,3 6,2 6,9 4,10" fill="#0f172a" />
+              <!-- Body (Cube, green hoodie) -->
+              <polygon points="-7,-15 0,-18 7,-15 0,-12" fill="#34d399" />
+              <polygon points="-7,-15 0,-12 0,2 -7,-1" fill="#059669" />
+              <polygon points="0,-12 7,-15 7,-1 0,2" fill="#064e3b" />
+              <!-- Hoodie details -->
+              <path d="M -3,-1 C -1,1 1,1 3,-1" fill="none" stroke="#6ee7b7" stroke-width="0.8" />
+              <line x1="-2" y1="-10" x2="-2" y2="-6" stroke="#ffffff" stroke-width="0.8" />
+              <line x1="2" y1="-10" x2="2" y2="-6" stroke="#ffffff" stroke-width="0.8" />
+              <!-- Arms -->
+              <polygon points="-10,-14 -7,-13 -7,-4 -10,-5" fill="#059669" />
+              <polygon points="7,-13 10,-14 10,-5 7,-4" fill="#064e3b" />
+              <!-- Head (Cube) -->
+              <polygon points="-6,-25 0,-28 6,-25 0,-22" fill="#a7f3d0" />
+              <polygon points="-6,-25 0,-22 0,-15 -6,-18" fill="#f0fdf4" />
+              <polygon points="0,-22 6,-25 6,-18 0,-15" fill="#10b981" />
+              <!-- Black Glasses -->
+              <rect x="-5" y="-21" width="4" height="3" fill="none" stroke="#1e293b" stroke-width="1.2" />
+              <rect x="-1" y="-20.5" width="4" height="3" fill="none" stroke="#1e293b" stroke-width="1.2" />
+              <line x1="-5" y1="-19.5" x2="3" y2="-19.5" stroke="#1e293b" stroke-width="0.8" />
+              <!-- Eyes -->
+              <rect x="-4" y="-20" width="1" height="1" fill="#000000" />
+              <rect x="0" y="-19.5" width="1" height="1" fill="#000000" />
+            </g>
+            <text class="char-name" y="22">self</text>
+            <text class="char-status-tag" y="-36" id="tag-developer">Idle</text>
+          </g>
+
+          <!-- QA (qa_agent) -->
+          <g class="office-char qa" id="char-qa" style="transform: translate(330px, 220px);">
+            <!-- 3D QA Vector Character -->
+            <g class="char-sprite-3d">
+              <!-- Legs -->
+              <polygon points="-4,2 -1,3 -1,10 -4,9" fill="#db2777" />
+              <polygon points="-1,3 1,2 1,9 -1,10" fill="#9d174d" />
+              <polygon points="1,2 4,3 4,10 1,9" fill="#db2777" />
+              <polygon points="4,3 6,2 6,9 4,10" fill="#9d174d" />
+              <!-- Body (Cube, pink overalls) -->
+              <polygon points="-7,-15 0,-18 7,-15 0,-12" fill="#f472b6" />
+              <polygon points="-7,-15 0,-12 0,2 -7,-1" fill="#db2777" />
+              <polygon points="0,-12 7,-15 7,-1 0,2" fill="#881337" />
+              <!-- Overalls buckles -->
+              <rect x="-4" y="-12" width="1.5" height="4" fill="#1e293b" />
+              <rect x="2.5" y="-12.5" width="1.5" height="4" fill="#1e293b" />
+              <!-- Arms -->
+              <polygon points="-10,-14 -7,-13 -7,-4 -10,-5" fill="#db2777" />
+              <polygon points="7,-13 10,-14 10,-5 7,-4" fill="#881337" />
+              <!-- Head (Cube) -->
+              <polygon points="-6,-25 0,-28 6,-25 0,-22" fill="#fce7f3" />
+              <polygon points="-6,-25 0,-22 0,-15 -6,-18" fill="#fff1f2" />
+              <polygon points="0,-22 6,-25 6,-18 0,-15" fill="#ec4899" />
+              <!-- Eyes -->
+              <rect x="-4" y="-20" width="1.2" height="2" fill="#000000" />
+              <rect x="-1" y="-19.5" width="1.2" height="2" fill="#000000" />
+            </g>
+            <text class="char-name" y="22">qa_agent</text>
+            <text class="char-status-tag" y="-36" id="tag-qa">Idle</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 2. Kanban Board -->
+      <section class="kanban-section">
+        <div class="section-title">
+          <span>任務分配看板 (Kanban)</span>
+        </div>
+        <div class="kanban-board">
+          <div class="kanban-column" id="col-todo">
+            <div class="column-header">
+              <span>待處理 (To Do)</span>
+              <span class="column-count" id="count-todo">0</span>
+            </div>
+          </div>
+
+          <div class="kanban-column" id="col-progress">
+            <div class="column-header">
+              <span>進行中 (In Progress)</span>
+              <span class="column-count" id="count-progress">0</span>
+            </div>
+          </div>
+
+          <div class="kanban-column" id="col-done">
+            <div class="column-header">
+              <span>已完成 (Done)</span>
+              <span class="column-count" id="count-done">0</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Right Sidebar (Communication) -->
+    <aside class="right-panel">
+      <!-- Chat Container -->
+      <div class="chat-container">
+        <div class="chat-header">
+          <span>內部對話頻道 (Chat Room)</span>
+          <span class="chat-live-badge">● Live</span>
+        </div>
+        <div class="chat-messages" id="chat-messages-container">
+          <div class="chat-bubble received manager">
+            <span class="bubble-sender">Antigravity (Manager)</span>
+            <div class="bubble-content">
+              你好！歡迎來到 AI Agent Office 協作面板。請在上方選擇一個任務場景，並點擊「啟動模擬」來觀看子代理如何分工運作！
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Agent Details Modal Overlay -->
+  <div class="agent-details-overlay" id="details-overlay">
+    <div class="details-modal">
+      <div class="details-header">
+        <div class="details-title-group">
+          <div class="agent-avatar-img" id="modal-avatar-container" style="border-radius: 8px; width: 52px; height: 52px; background: rgba(0,0,0,0.03); padding: 2px;">
+            <svg id="modal-avatar-svg" viewBox="-20 -35 40 40" style="width: 100%; height: 100%; display: block;">
+              <g id="modal-avatar-3d-g"></g>
+            </svg>
+          </div>
+          <div>
+            <h2 id="modal-name">Antigravity</h2>
+            <p id="modal-role">Manager / 主代理</p>
+          </div>
+        </div>
+        <button class="details-close" id="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-section">
+        <span class="stat-label">系統提示詞 (System Instructions)</span>
+        <div class="system-prompt-box" id="modal-prompt"></div>
+      </div>
+
+      <div class="modal-section">
+        <span class="stat-label">授權工具範圍 (Authorized Tool Permissions)</span>
+        <div id="modal-tools" class="modal-tools-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

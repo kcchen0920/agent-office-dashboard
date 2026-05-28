@@ -1,0 +1,10 @@
+# 依賴庫
+node_modules/
+
+# 日誌檔
+*.log
+npm-debug.log*
+
+# Repomix 打包輸出
+repomix-output.xml
+repomix-output.txt

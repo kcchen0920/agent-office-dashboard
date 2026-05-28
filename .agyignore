@@ -1,0 +1,9 @@
+# 依賴庫與系統資料夾
+node_modules/
+.git/
+.gemini/
+
+# 日誌與大檔案
+*.log
+repomix-output.xml
+repomix-output.txt
