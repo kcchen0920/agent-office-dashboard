@@ -1150,7 +1150,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   applyLanguage(savedLang);
 
-  connectStream('none');
+  connectStream('prune');
   initWandering();
 });
 
