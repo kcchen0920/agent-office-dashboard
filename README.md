@@ -1,4 +1,4 @@
-# AI Agent Office ── Minecraft 體素辦公模擬器與 Token 監控面板 🎮🤖
+# AI Agent Office ── 3D 體素辦公模擬器與 Token 監控面板 🎮🤖
 
 [繁體中文 (Traditional Chinese)](#-繁體中文) | [English](#-english) | [日本語 (Japanese)](#-日本語)
 
@@ -6,10 +6,10 @@
 
 ## 🇹🇼 繁體中文
 
-一個為 **Antigravity-cli (Gemini AI Agent)** 設計的專案視覺化監控面板。本專案以 **Minecraft 體素（Voxel）復古風格** 呈現辦公室代理人的即時動態，並整合了對話日誌的 **SSE (Server-Sent Events) 即時串流**、**Token 消耗監控與警報**，以及多種 **Token 脈絡優化策略模擬**。
+一個為 **Antigravity-cli (Gemini AI Agent)** 設計的專案視覺化監控面板。本專案以 **3D 體素（Voxel）復古風格** 呈現辦公室代理人的即時動態，並整合了對話日誌的 **SSE (Server-Sent Events) 即時串流**、**Token 消耗監控與警報**，以及多種 **Token 脈絡優化策略模擬**。
 
 ### 🎨 專案特色
-* **體素復古視覺風格 (Minecraft-Voxel)**：以精緻的 SVG 體素圖示呈現四個核心 AI 代理人：**Antigravity (Manager)**、**Developer (開發者)**、**QA (測試者)** 與 **Researcher (研究員)**。代理人會根據其目前的真實任務動態（如 Thinking、Working、Researching、Idle）變換表情、動作與燈號。
+* **體素復古視覺風格 (Voxel Aesthetic)**：以精緻的 SVG 體素圖示呈現四個核心 AI 代理人：**Antigravity (Manager)**、**Developer (開發者)**、**QA (測試者)** 與 **Researcher (研究員)**。代理人會根據其目前的真實任務動態（如 Thinking、Working、Researching、Idle）變換表情、動作與燈號。
 * **即時事件串流 (SSE)**：後端會動態掃描您本機的對話軌跡（`transcript.jsonl`），並透過 `/stream` 端點實時推送到前端。
 * **多國語言切換 (I18n)**：提供繁體中文、英文與日文的即時 UI 切換按鈕。
 * **Token 消耗警報**：自動累計當前對話所消耗的 Tokens，並在接近設定的上限時（如 100K、500K、1M 或 2M）發出警報橫幅與桌面通知。
@@ -32,10 +32,10 @@
 
 ## 🇺🇸 English
 
-An interactive, Minecraft-voxel style dashboard designed to visualize your AI Agent's real-time activities, monitor token consumption, and simulate token optimization strategies by tailing active conversation logs via Server-Sent Events (SSE).
+An interactive, 3D voxel-style dashboard designed to visualize your AI Agent's real-time activities, monitor token consumption, and simulate token optimization strategies by tailing active conversation logs via Server-Sent Events (SSE).
 
 ### 🎨 Key Features
-* **Minecraft-Voxel Aesthetic**: Features cute SVG isometric voxel agents representing **Antigravity (Manager)**, **Developer (Coder)**, **QA (Tester)**, and **Researcher (Searcher)**. Agents animate in real-time based on their active task states.
+* **3D Voxel Aesthetic**: Features cute SVG isometric voxel agents representing **Antigravity (Manager)**, **Developer (Coder)**, **QA (Tester)**, and **Researcher (Searcher)**. Agents animate in real-time based on their active task states.
 * **Real-time SSE Logs Stream**: The lightweight Node.js server automatically tails your local active agent session transcript (`transcript.jsonl`) and streams it to the web UI.
 * **Language Selector (I18n)**: Seamlessly toggle the entire dashboard interface between Traditional Chinese, English, and Japanese at any time.
 * **Token Alert & Monitor**: Tracks accumulated session token usage and issues warnings (via UI banner and desktop notifications) when approaching the custom threshold (100K, 500K, 1M, or 2M).
@@ -58,12 +58,12 @@ An interactive, Minecraft-voxel style dashboard designed to visualize your AI Ag
 
 ## 🇯🇵 日本語
 
-**Antigravity-cli (Gemini AI Agent)** 専用のビジュアル監視パネルです。**Minecraft ボクセル（Voxel）風**のレトロなグラフィックでエージェントたちのリアルタイムのアクティビティを再現し、対話ログの **SSE (Server-Sent Events) ストリーム**、**Token 消費警告**、各種 **Token 最適化戦略シミュレーター** を搭載しています。
+**Antigravity-cli (Gemini AI Agent)** 専用のビジュアル監視パネルです。**3D ボクセル（Voxel）風**のレトロなグラフィックでエージェントたちのリアルタイムのアクティビティを再現し、対話ログの **SSE (Server-Sent Events) ストリーム**、**Token 消費警告**、各種 **Token 最適化戦略シミュレーター** を搭載しています。
 
 ### 🎨 主な機能
 * **ボクセル・レトロビジュアル**：SVGで描かれたかわいいキャラクター **Antigravity (Manager)**、**Developer (開発)**、**QA (テスト)**、**Researcher (調査)** が登場。状況（Thinking、Coding、Research、Idle）に合わせてリアルタイムで表情や動きがアニメーション変化します。
 * **SSE リアルタイムストリーミング**：バックエンドがローカルの対話ログ（`transcript.jsonl`）を自動検知し、ブラウザへプッシュ配信します。
-* **多言語対応 (I18n)**：コントロールバーの選択ボックスから、日本語、英語、繁体字中国語をいつでも切り替え可能です。
+* **多言語対応 (I18n)**：コントロールバー of 選択ボックスから、日本語、英語、繁体字中国語をいつでも切り替え可能です。
 * **トークンアラート機能**：セッション全体の消費トークンを算出し、設定した警告しきい値（100K、500K、1M、2M）に近づいた際にアラートバナーやデスクトップ通知で警告します。
 * **最適化戦略シミュレーター**：コンテキスト削減戦略（スライディングウィンドウ、ツール出力削減、記憶の要約、コンテキストキャッシュなど）をフロントエンド上でトグルして効果を可視化できます。
 

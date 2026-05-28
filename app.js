@@ -1,4 +1,4 @@
-// Real-time Agent Office Dashboard Controller (Minecraft Voxel Sim Edition)
+// Real-time Agent Office Dashboard Controller (3D Voxel Sim Edition)
 
 const AGENTS = {
   manager: {
@@ -430,9 +430,9 @@ function applyLanguage(lang) {
   });
 
   // 2. Document Title
-  document.title = lang === 'en' ? 'AI Agent Office - Minecraft Voxel Office Simulator' :
+  document.title = lang === 'en' ? 'AI Agent Office - 3D Voxel Office Simulator' :
                    lang === 'ja' ? 'AI Agent Office - ボクセルオフィスシミュレーター' :
-                   'AI Agent Office - Minecraft 體素辦公模擬器';
+                   'AI Agent Office - 3D 體素辦公模擬器';
 
   // 3. Update active states/status texts
   updateConnectionStatus(lastConnectionStatus);
