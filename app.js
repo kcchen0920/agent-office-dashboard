@@ -313,6 +313,14 @@ const TRANSLATIONS = {
 let currentLanguage = 'zh';
 let lastConnectionStatus = 'disconnected';
 
+// Track which agents are currently active so we don't wrongly reset them
+const agentActiveStatus = {
+  manager: 'idle',
+  researcher: 'idle',
+  developer: 'idle',
+  qa: 'idle'
+};
+
 const statusDisplayNames = {
   idle: 'Idle',
   thinking: 'Meeting',
@@ -478,6 +486,7 @@ function updateAgentStatus(agentKey, status) {
   const ui = DOM.agents[agentKey];
   if (!ui) return;
 
+  agentActiveStatus[agentKey] = status;
   ui.status.className = `status-dot ${status}`;
   ui.text.innerText = status.charAt(0).toUpperCase() + status.slice(1);
 
@@ -701,8 +710,8 @@ function processStep(step) {
     }
   }
 
-  Object.keys(AGENTS).forEach(k => updateAgentStatus(k, 'idle'));
-
+  // Do NOT blanket-reset all agents on every step.
+  // Only reset agents to idle when a full planning cycle completes (PLANNER_RESPONSE DONE).
   if (stepHandlers[step.type]) {
     stepHandlers[step.type](step);
   } else if (toolTypes.includes(step.type)) {
@@ -710,6 +719,8 @@ function processStep(step) {
   }
 
   if (step.status === 'DONE' && step.type === 'PLANNER_RESPONSE') {
+    // Reset all agents to idle when the planning cycle completes
+    Object.keys(AGENTS).forEach(k => updateAgentStatus(k, 'idle'));
     kanbanTasks.forEach(t => {
       if (t.status === 'progress') t.status = 'done';
     });
