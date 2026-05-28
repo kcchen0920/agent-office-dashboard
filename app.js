@@ -463,18 +463,6 @@ function applyLanguage(lang) {
       AGENTS[k].prompt = TRANSLATIONS[lang][`agent-${k}-prompt`] || AGENTS[k].prompt;
     }
   });
-}'rgba(255, 170, 0, 0.05)', className: 'status-dot waiting', text: '🟡 連線中...', color: 'var(--neon-amber)', animation: 'pulse-amber 1.5s infinite' },
-    disconnected: { border: 'rgba(255, 0, 122, 0.3)', bg: 'rgba(255, 0, 122, 0.05)', className: 'status-dot idle', text: '🔴 連線中斷', color: 'var(--text-secondary)', animation: 'none' }
-  };
-  
-  const cfg = configs[status] || configs.disconnected;
-  DOM.connBadge.style.borderColor = cfg.border;
-  DOM.connBadge.style.background = cfg.bg;
-  DOM.connDot.className = cfg.className;
-  DOM.connDot.style.background = cfg.color;
-  DOM.connDot.style.animation = cfg.animation;
-  DOM.connStatusText.innerText = cfg.text;
-  DOM.connStatusText.style.color = cfg.color;
 }
 
 // Move character in SVG office simulator
@@ -965,7 +953,9 @@ function connectStream(strategy = 'none') {
   currentStrategy = strategy;
 
   if (eventSource) eventSource.close();
-  eventSource = new EventSource(`/stream?strategy=${strategy}`);
+  const isLocalFile = window.location.protocol === 'file:';
+  const baseUrl = isLocalFile ? 'http://localhost:3000' : '';
+  eventSource = new EventSource(`${baseUrl}/stream?strategy=${strategy}`);
 
   eventSource.onopen = () => {
     console.log('SSE connection successfully opened! Strategy:', strategy);
