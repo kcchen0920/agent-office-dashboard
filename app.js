@@ -97,6 +97,222 @@ const LOCATIONS = {
   }
 };
 
+const TRANSLATIONS = {
+  zh: {
+    'logo-title': 'AI AGENT OFFICE',
+    'limit-label': '警報閾值:',
+    'strategy-label': 'Token 優化策略:',
+    'lang-label': '語言 / Lang:',
+    'notify-btn-text': '🔔 啟用瀏覽器桌面通知',
+    'connection-status-text': '🔴 未連線',
+    'sidebar-members-title': '辦公室成員',
+    'agent-count': '4 名',
+    'role-manager': 'Manager / 主代理',
+    'role-researcher': 'Researcher / 研究代理',
+    'role-developer': 'Developer / 開發代理',
+    'role-qa': 'QA Tester / 測試代理',
+    'stats-calls': '呼叫次數',
+    'stats-tokens': 'Tokens 消耗',
+    'savings-title': 'Token 優化效益',
+    'savings-raw': '原始消耗:',
+    'savings-optimized': '優化實際:',
+    'savings-saved': '節省 Tokens:',
+    'savings-cost': '預估節省金額:',
+    'simulator-title': '虛擬方塊辦公模擬器 (Voxel Office Simulator)',
+    'room-meeting': '會議室 / 經理席',
+    'room-research': '資料庫與研究',
+    'room-dev': '程式開發區',
+    'room-qa': '測試與除錯中心',
+    'room-lounge': '休閒茶水間',
+    'kanban-title': '任務分配看板 (Kanban)',
+    'kanban-todo': '待處理 (To Do)',
+    'kanban-progress': '進行中 (In Progress)',
+    'kanban-done': '已完成 (Done)',
+    'chat-title': '內部對話頻道 (Chat Room)',
+    'modal-instructions-title': '系統提示詞 (System Instructions)',
+    'modal-tools-title': '授權工具範圍 (Authorized Tool Permissions)',
+    
+    // Select options
+    'opt-none': '⛔ 原始歷史 (Full History)',
+    'opt-window': '✂️ 滑動窗口 (Sliding Window)',
+    'opt-prune': '🧹 工具輸出裁減 (Tool Pruning)',
+    'opt-summarize': '📝 記憶摘要化 (Summarization)',
+    'opt-cache': '⚡ Gemini 脈絡快取 (Context Cache)',
+
+    // Connection states
+    'conn-connected': '實時連線中',
+    'conn-connecting': '連線中...',
+    'conn-disconnected': '未連線',
+
+    // Agent status display names
+    'status-idle': 'Idle / 空閒',
+    'status-thinking': 'Meeting / 會議中',
+    'status-working': 'Coding / 開發中',
+    'status-researching': 'Research / 研究中',
+    'status-waiting': 'Waiting / 等待中',
+    'status-coffee': 'Coffee / 喝咖啡',
+
+    // Alert
+    'token-alert': '警告：Token 消耗即將達到上限！',
+
+    // Dynamic prompts
+    'agent-manager-role': 'Manager / 主代理',
+    'agent-manager-prompt': `你扮演專案的 Manager (主代理)。\n職責：\n1. 接收使用者的最高指示，拆解開發任務。\n2. 撰寫「實作計畫 (Implementation Plan)」與任務分工。\n3. 建立並協調子代理 (Research, Developer, QA) 完成工作。\n4. 進行最後的代碼整合、整合測試，並向使用者提交 Walkthrough 成果報告。`,
+    
+    'agent-researcher-role': 'Researcher / 研究代理',
+    'agent-researcher-prompt': `你扮演專案的 Researcher (研究代理)。\n職責：\n1. 深入研究程式碼庫，尋找現有的類別、組件或 API。\n2. 進行外部網路搜尋，尋找第三方庫的安裝與使用文檔。\n3. 為開發代理提供前置的技術背景分析。\n注意：你是唯讀代理，無權修改任何程式碼檔案。`,
+    
+    'agent-developer-role': 'Developer / 開發代理',
+    'agent-developer-prompt': `你扮演專案的 Developer (開發代理)。\n職責：\n1. 根據 Manager 分配的任務與規格，進行程式碼編寫與修改。\n2. 遵循專案的設計規範，使用 Vanilla CSS / HTML / React 等技術。\n3. 完成變更後，回報給 Manager 並提請程式碼審查。`,
+    
+    'agent-qa-role': 'QA Tester / 測試代理',
+    'agent-qa-prompt': `你扮演專案的 QA Tester (測試代理)。\n職責：\n1. 針對 Developer 新增的程式碼編寫單元測試或集成測試。\n2. 執行建置（Build）與測試指令，確保系統無語法或邏輯錯誤。\n3. 如果發現錯誤，收集 log 記錄並回報給 Manager 重新修改。`
+  },
+  en: {
+    'logo-title': 'AI AGENT OFFICE',
+    'limit-label': 'Alert Threshold:',
+    'strategy-label': 'Token Optimization:',
+    'lang-label': 'Language / Lang:',
+    'notify-btn-text': '🔔 Enable Desktop Notifications',
+    'connection-status-text': '🔴 Disconnected',
+    'sidebar-members-title': 'Office Members',
+    'agent-count': '4 Members',
+    'role-manager': 'Manager / Lead Agent',
+    'role-researcher': 'Researcher / Search Agent',
+    'role-developer': 'Developer / Code Agent',
+    'role-qa': 'QA Tester / Verification Agent',
+    'stats-calls': 'Total Calls',
+    'stats-tokens': 'Tokens Used',
+    'savings-title': 'Token Optimization Efficiency',
+    'savings-raw': 'Original Cost:',
+    'savings-optimized': 'Actual Cost:',
+    'savings-saved': 'Saved Tokens:',
+    'savings-cost': 'Est. Cost Saved:',
+    'simulator-title': 'Voxel Office Simulator',
+    'room-meeting': 'Meeting Room / Manager Seat',
+    'room-research': 'Database & Research Lab',
+    'room-dev': 'Software Development Area',
+    'room-qa': 'Testing & Debugging Center',
+    'room-lounge': 'Cozy Breakroom',
+    'kanban-title': 'Task Kanban Board',
+    'kanban-todo': 'To Do',
+    'kanban-progress': 'In Progress',
+    'kanban-done': 'Done',
+    'chat-title': 'Internal Chat Channel',
+    'modal-instructions-title': 'System Instructions',
+    'modal-tools-title': 'Authorized Tool Permissions',
+
+    // Select options
+    'opt-none': '⛔ Full History (none)',
+    'opt-window': '✂️ Sliding Window (window)',
+    'opt-prune': '🧹 Tool Pruning (prune)',
+    'opt-summarize': '📝 Memorized Summary (summarize)',
+    'opt-cache': '⚡ Context Cache (cache)',
+
+    // Connection states
+    'conn-connected': 'Live Connected',
+    'conn-connecting': 'Connecting...',
+    'conn-disconnected': 'Disconnected',
+
+    // Agent status display names
+    'status-idle': 'Idle',
+    'status-thinking': 'Meeting',
+    'status-working': 'Coding',
+    'status-researching': 'Research',
+    'status-waiting': 'Waiting',
+    'status-coffee': 'Coffee Break',
+
+    // Alert
+    'token-alert': 'Warning: Token usage is reaching the limit!',
+
+    // Dynamic prompts
+    'agent-manager-role': 'Manager / Lead Agent',
+    'agent-manager-prompt': `You play the role of the project's Manager (Lead Agent).\nResponsibilities:\n1. Receive user high-level instructions, decompose into development tasks.\n2. Write the "Implementation Plan" and assign tasks.\n3. Define and coordinate sub-agents (Research, Developer, QA) to complete work.\n4. Perform final code integration, integration testing, and submit Walkthrough reports to the user.`,
+    
+    'agent-researcher-role': 'Researcher / Search Agent',
+    'agent-researcher-prompt': `You play the role of the project's Researcher (Search Agent).\nResponsibilities:\n1. Research the codebase in depth to search for existing classes, components, or APIs.\n2. Run web searches to find installation and usage docs for third-party libraries.\n3. Provide developer agents with technical background analysis.\nNote: You are a read-only agent and cannot modify any source files.`,
+    
+    'agent-developer-role': 'Developer / Code Agent',
+    'agent-developer-prompt': `You play the role of the project's Developer (Code Agent).\nResponsibilities:\n1. Write and modify code based on specifications and tasks assigned by the Manager.\n2. Follow project design rules, using Vanilla CSS / HTML / React, etc.\n3. Report back to the Manager for code review once changes are completed.`,
+    
+    'agent-qa-role': 'QA Tester / Verification Agent',
+    'agent-qa-prompt': `You play the role of the project's QA Tester (Verification Agent).\nResponsibilities:\n1. Write unit or integration tests for the code added by the Developer.\n2. Run build and test commands to verify no syntax or logical errors exist.\n3. Collect logs and report to the Manager for fixing if errors are found.`
+  },
+  ja: {
+    'logo-title': 'AI AGENT OFFICE',
+    'limit-label': '警告しきい値:',
+    'strategy-label': 'Token 最適化方法:',
+    'lang-label': '言語 / Lang:',
+    'notify-btn-text': '🔔 デスクトップ通知を有効化',
+    'connection-status-text': '🔴 未接続',
+    'sidebar-members-title': 'オフィスメニュー',
+    'agent-count': '4 名',
+    'role-manager': 'Manager / 主エージェント',
+    'role-researcher': 'Researcher / 研究エージェント',
+    'role-developer': 'Developer / 開発エージェント',
+    'role-qa': 'QA Tester / テストエージェント',
+    'stats-calls': 'コール数',
+    'stats-tokens': '消費トークン',
+    'savings-title': 'Token 最適化の効果',
+    'savings-raw': '元の消費量:',
+    'savings-optimized': '実際の消費量:',
+    'savings-saved': '節約トークン:',
+    'savings-cost': '推定節約額:',
+    'simulator-title': 'ボクセルオフィスシミュレーター',
+    'room-meeting': '会議室 / マネージャー席',
+    'room-research': 'データベース・研究室',
+    'room-dev': 'プログラム開発エリア',
+    'room-qa': '検証・デバッグセンター',
+    'room-lounge': 'リラックス休憩室',
+    'kanban-title': 'タスクカンバンボード',
+    'kanban-todo': '未対応',
+    'kanban-progress': '進行中',
+    'kanban-done': '完了',
+    'chat-title': '社内チャットチャンネル',
+    'modal-instructions-title': 'システムプロンプト (指示)',
+    'modal-tools-title': '許可されたツール権限',
+
+    // Select options
+    'opt-none': '⛔ 元の履歴 (Full History)',
+    'opt-window': '✂️ スライディングウィンドウ (Sliding Window)',
+    'opt-prune': '🧹 ツール出力削減 (Tool Pruning)',
+    'opt-summarize': '📝 記憶要約化 (Summarization)',
+    'opt-cache': '⚡ Gemini コンテキストキャッシュ',
+
+    // Connection states
+    'conn-connected': 'リアルタイム接続中',
+    'conn-connecting': '接続中...',
+    'conn-disconnected': '未接続',
+
+    // Agent status display names
+    'status-idle': 'Idle / 待機中',
+    'status-thinking': 'Meeting / 会議中',
+    'status-working': 'Coding / 開発中',
+    'status-researching': 'Research / 調査中',
+    'status-waiting': 'Waiting / 承認待ち',
+    'status-coffee': 'Coffee / 休憩中',
+
+    // Alert
+    'token-alert': '警告：トークン消費量が上限に達しつつあります！',
+
+    // Dynamic prompts
+    'agent-manager-role': 'Manager / 主エージェント',
+    'agent-manager-prompt': `あなたはプロジェクトの Manager (主エージェント) です。\n職務：\n1. ユーザーからの高レベルの指示を受信し、開発タスクを分解します。\n2. 「実装計画 (Implementation Plan)」とタスクアサインを作成します。\n3. サブエージェント（Research, Developer, QA）を生成・調整し作業を推進します。\n4. 最終的なコード統合、結合テストを行い、ユーザーに成果報告（Walkthrough）を提出します。`,
+    
+    'agent-researcher-role': 'Researcher / 調査エージェント',
+    'agent-researcher-prompt': `あなたはプロジェクトの Researcher (調査エージェント) です。\n職務：\n1. 調査対象のコードベースを詳しく分析し、既存のクラスやモジュール、APIを見つけます。\n2. 外部ウェブ検索を行って、サードパーティ製ライブラリの使い方や仕様書を見つけます。\n3. 開発エージェントに対して必要な前提技術情報を提供します。\n注意：あなたは読込専用（Read-only）エージェントであり、ソースファイルを変更する権限はありません。`,
+    
+    'agent-developer-role': 'Developer / 開発エージェント',
+    'agent-developer-prompt': `あなたはプロジェクトの Developer (開発エージェント) です。\n職務：\n1. マネージャーから割り当てられたタスクと仕様に基づいてコードを記述・修正します。\n2. プロジェクトのデザイン規約に従い、Vanilla CSS / HTML / React などの技術を使用します。\n3. 変更が完了したら、マネージャーにコードレビューを申請します。`,
+    
+    'agent-qa-role': 'QA Tester / テストエージェント',
+    'agent-qa-prompt': `あなたはプロジェクトの QA Tester (テストエージェント) です。\n職務：\n1. 開発エージェントが追加したコードに対して単体テストまたは結合テストを記述します。\n2. ビルドおよびテストコマンドを実行し、シンタックスエラーや論理エラーがないことを確認します。\n3. エラーが検出された場合はログを収集し、修正のためマネージャーに報告します。`
+  }
+};
+
+let currentLanguage = 'zh';
+let lastConnectionStatus = 'disconnected';
+
 const statusDisplayNames = {
   idle: 'Idle',
   thinking: 'Meeting',
@@ -176,9 +392,78 @@ const DOM = {
 
 // Update connection status UI
 function updateConnectionStatus(status) {
+  lastConnectionStatus = status;
+  const tKey = 'conn-' + status;
+  const localizedText = TRANSLATIONS[currentLanguage] && TRANSLATIONS[currentLanguage][tKey] || status;
+
   const configs = {
-    connected: { border: 'rgba(0, 255, 133, 0.3)', bg: 'rgba(0, 255, 133, 0.05)', className: 'status-dot working', text: '🟢 實時連線中', color: 'var(--neon-emerald)', animation: 'pulse-emerald 1.5s infinite' },
-    connecting: { border: 'rgba(255, 170, 0, 0.3)', bg: 'rgba(255, 170, 0, 0.05)', className: 'status-dot waiting', text: '🟡 連線中...', color: 'var(--neon-amber)', animation: 'pulse-amber 1.5s infinite' },
+    connected: { border: 'rgba(0, 255, 133, 0.3)', bg: 'rgba(0, 255, 133, 0.05)', className: 'status-dot working', text: '🟢 ' + localizedText, color: 'var(--neon-emerald)', animation: 'pulse-emerald 1.5s infinite' },
+    connecting: { border: 'rgba(255, 170, 0, 0.3)', bg: 'rgba(255, 170, 0, 0.05)', className: 'status-dot waiting', text: '🟡 ' + localizedText, color: 'var(--neon-amber)', animation: 'pulse-amber 1.5s infinite' },
+    disconnected: { border: 'rgba(255, 0, 122, 0.3)', bg: 'rgba(255, 0, 122, 0.05)', className: 'status-dot idle', text: '🔴 ' + localizedText, color: 'var(--text-secondary)', animation: 'none' }
+  };
+  
+  const cfg = configs[status] || configs.disconnected;
+  DOM.connBadge.style.borderColor = cfg.border;
+  DOM.connBadge.style.background = cfg.bg;
+  DOM.connDot.className = cfg.className;
+  DOM.connDot.style.background = cfg.color;
+  DOM.connDot.style.animation = cfg.animation;
+  DOM.connStatusText.innerText = cfg.text;
+  DOM.connStatusText.style.color = cfg.color;
+}
+
+// Translate the page labels and components dynamically
+function applyLanguage(lang) {
+  currentLanguage = lang;
+  localStorage.setItem('agent_office_lang', lang);
+
+  // 1. Translation for static nodes tagged with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      if (el.tagName === 'OPTION') {
+        el.text = TRANSLATIONS[lang][key];
+      } else {
+        el.textContent = TRANSLATIONS[lang][key];
+      }
+    }
+  });
+
+  // 2. Document Title
+  document.title = lang === 'en' ? 'AI Agent Office - Minecraft Voxel Office Simulator' :
+                   lang === 'ja' ? 'AI Agent Office - ボクセルオフィスシミュレーター' :
+                   'AI Agent Office - Minecraft 體素辦公模擬器';
+
+  // 3. Update active states/status texts
+  updateConnectionStatus(lastConnectionStatus);
+  setupNotificationButton();
+
+  // 4. Map display names for SVG characters
+  statusDisplayNames.idle = lang === 'en' ? 'Idle' : lang === 'ja' ? '待機中' : 'Idle';
+  statusDisplayNames.thinking = lang === 'en' ? 'Meeting' : lang === 'ja' ? '会議中' : '會議中';
+  statusDisplayNames.working = lang === 'en' ? 'Coding' : lang === 'ja' ? '開発中' : '開發中';
+  statusDisplayNames.researching = lang === 'en' ? 'Research' : lang === 'ja' ? '調査中' : '研究中';
+  statusDisplayNames.waiting = lang === 'en' ? 'Waiting' : lang === 'ja' ? '承認待ち' : '等待中';
+
+  // Update simulator characters status tags if idle
+  Object.keys(AGENTS).forEach(k => {
+    const tagEl = document.getElementById(`tag-${k}`);
+    if (tagEl) {
+      const isIdle = DOM.agents[k] && DOM.agents[k].status.classList.contains('idle');
+      if (isIdle) {
+        tagEl.innerText = statusDisplayNames.idle;
+      }
+    }
+  });
+
+  // Update dynamically mapped instructions in AGENTS mapping
+  Object.keys(AGENTS).forEach(k => {
+    if (TRANSLATIONS[lang]) {
+      AGENTS[k].role = TRANSLATIONS[lang][`agent-${k}-role`] || AGENTS[k].role;
+      AGENTS[k].prompt = TRANSLATIONS[lang][`agent-${k}-prompt`] || AGENTS[k].prompt;
+    }
+  });
+}'rgba(255, 170, 0, 0.05)', className: 'status-dot waiting', text: '🟡 連線中...', color: 'var(--neon-amber)', animation: 'pulse-amber 1.5s infinite' },
     disconnected: { border: 'rgba(255, 0, 122, 0.3)', bg: 'rgba(255, 0, 122, 0.05)', className: 'status-dot idle', text: '🔴 連線中斷', color: 'var(--text-secondary)', animation: 'none' }
   };
   
@@ -567,17 +852,35 @@ function checkTokenLimitAlert(totalOptimizedTokens) {
   
   if (percentage >= 100) {
     DOM.alertBanner.className = 'token-alert-banner danger';
-    DOM.alertText.innerText = `🚨 致命警告：Token 消耗已達 100% 上限 (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，模型即將無法使用！`;
+    DOM.alertText.innerText = currentLanguage === 'en' ? `🚨 Critical Warning: Token usage reached 100% Limit (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})!` :
+                              currentLanguage === 'ja' ? `🚨 致命的な警告：トークン消費量が 100% 上限に達しました (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！` :
+                              `🚨 致命警告：Token 消耗已達 100% 上限 (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，模型即將無法使用！`;
     DOM.alertBanner.style.display = 'flex';
-    triggerDesktopNotification('🚨 AI Agent Office: Token Limit Exceeded!', `Token 消耗已達 100% 上限 (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！`);
+    triggerDesktopNotification(
+      currentLanguage === 'en' ? '🚨 AI Agent Office: Token Limit Exceeded!' :
+      currentLanguage === 'ja' ? '🚨 AI Agent Office: トークン制限を超過しました！' :
+      '🚨 AI Agent Office: Token Limit Exceeded!',
+      currentLanguage === 'en' ? `Token usage reached 100% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})!` :
+      currentLanguage === 'ja' ? `トークン消費量が 100% に達しました (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！` :
+      `Token 消耗已達 100% 上限 (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！`
+    );
     if (lastTokenAlertLogged !== 'danger') {
       lastTokenAlertLogged = 'danger';
     }
   } else if (percentage >= 80) {
     DOM.alertBanner.className = 'token-alert-banner warning';
-    DOM.alertText.innerText = `⚠️ 提前通知：Token 消耗已達 ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，即將無法使用！`;
+    DOM.alertText.innerText = currentLanguage === 'en' ? `⚠️ Warning: Token usage reached ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})!` :
+                              currentLanguage === 'ja' ? `⚠️ 早期通知：トークン消費量が ${Math.round(percentage)}% に達しました (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！` :
+                              `⚠️ 提前通知：Token 消耗已達 ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，即將無法使用！`;
     DOM.alertBanner.style.display = 'flex';
-    triggerDesktopNotification('⚠️ AI Agent Office: Token Warning', `Token 消耗已達 ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，請注意優化！`);
+    triggerDesktopNotification(
+      currentLanguage === 'en' ? '⚠️ AI Agent Office: Token Warning' :
+      currentLanguage === 'ja' ? '⚠️ AI Agent Office: トークン警告' :
+      '⚠️ AI Agent Office: Token Warning',
+      currentLanguage === 'en' ? `Token usage reached ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})!` :
+      currentLanguage === 'ja' ? `トークン消費量が ${Math.round(percentage)}% に達しました (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})！` :
+      `Token 消耗已達 ${Math.round(percentage)}% (${totalOptimizedTokens.toLocaleString()} / ${tokenLimit.toLocaleString()})，請注意優化！`
+    );
     if (lastTokenAlertLogged !== 'warning') {
       lastTokenAlertLogged = 'warning';
     }
@@ -605,40 +908,56 @@ function setupNotificationButton() {
   
   const updateBtnUI = () => {
     if (!('Notification' in window)) {
-      DOM.notifyBtnText.innerText = '❌ 不支援桌面通知';
+      DOM.notifyBtnText.innerText = currentLanguage === 'en' ? '❌ Notifications Not Supported' :
+                                    currentLanguage === 'ja' ? '❌ 通知はサポートされていません' :
+                                    '❌ 不支援桌面通知';
       DOM.notifyBtn.disabled = true;
       return;
     }
     if (Notification.permission === 'granted') {
-      DOM.notifyBtnText.innerText = '🟢 已啟用桌面通知';
+      DOM.notifyBtnText.innerText = currentLanguage === 'en' ? '🟢 Desktop Notifications Enabled' :
+                                    currentLanguage === 'ja' ? '🟢 デスクトップ通知が有効' :
+                                    '🟢 已啟用桌面通知';
       DOM.notifyBtn.style.borderColor = 'rgba(0, 255, 133, 0.4)';
       DOM.notifyBtn.style.color = 'var(--neon-emerald)';
     } else if (Notification.permission === 'denied') {
-      DOM.notifyBtnText.innerText = '🔴 桌面通知已被拒絕';
+      DOM.notifyBtnText.innerText = currentLanguage === 'en' ? '🔴 Notifications Blocked' :
+                                    currentLanguage === 'ja' ? '🔴 通知がブロックされています' :
+                                    '🔴 桌面通知已被拒絕';
       DOM.notifyBtn.style.borderColor = 'rgba(255, 0, 122, 0.4)';
       DOM.notifyBtn.style.color = 'var(--neon-rose)';
     } else {
-      DOM.notifyBtnText.innerText = '🔔 啟用瀏覽器桌面通知';
+      DOM.notifyBtnText.innerText = TRANSLATIONS[currentLanguage]['notify-btn-text'] || '🔔 啟用瀏覽器桌面通知';
       DOM.notifyBtn.style.borderColor = 'var(--border-color)';
       DOM.notifyBtn.style.color = 'var(--text-primary)';
     }
   };
   
   updateBtnUI();
+  
+  // Re-bind to ensure click works after UI repaint
+  DOM.notifyBtn.replaceWith(DOM.notifyBtn.cloneNode(true));
+  DOM.notifyBtn = document.getElementById('notify-btn');
+  DOM.notifyBtnText = document.getElementById('notify-btn-text');
+  
   DOM.notifyBtn.addEventListener('click', () => {
     if (!('Notification' in window)) return;
     Notification.requestPermission().then(permission => {
       updateBtnUI();
       if (permission === 'granted') {
-        new Notification('訂閱成功', { body: '當 Token 接近上限時，您將會收到通知！' });
+        const title = currentLanguage === 'en' ? 'Subscribed Successfully' :
+                      currentLanguage === 'ja' ? '購読完了' : '訂閱成功';
+        const body = currentLanguage === 'en' ? 'You will be notified when tokens are close to the limit!' :
+                     currentLanguage === 'ja' ? 'トークン制限に近づくと通知されます！' : '當 Token 接近上限時，您將會收到通知！';
+        new Notification(title, { body: body });
       }
     });
   });
 }
 
-function getStrategyNameChinese(strategy) {
-  const names = { window: '滑動窗口 (Sliding Window)', prune: '工具輸出裁減 (Tool Output Pruning)', summarize: '記憶摘要化 (Summarization)', cache: 'Gemini 脈絡快取 (Context Caching)' };
-  return names[strategy] || '原始歷史 (Full History)';
+function getStrategyName(strategy) {
+  const tKey = 'opt-' + strategy;
+  return TRANSLATIONS[currentLanguage] && TRANSLATIONS[currentLanguage][tKey] || strategy;
 }
 
 function connectStream(strategy = 'none') {
@@ -667,7 +986,11 @@ function connectStream(strategy = 'none') {
     });
     
     updateTokenSavingsDashboard();
-    appendChat('System', 'received', `已連結代理辦公室！當前Token策略：${getStrategyNameChinese(strategy)}。正在過濾並同步歷史紀錄...`, 'user');
+    
+    const connectMsg = currentLanguage === 'en' ? `Connected to Agent Office! Current Token Strategy: ${getStrategyName(strategy)}. Filtering and syncing logs...` :
+                       currentLanguage === 'ja' ? `エージェントオフィスに接続しました！現在のトークン戦略：${getStrategyName(strategy)}。ログを同期中...` :
+                       `已連結代理辦公室！當前Token策略：${getStrategyName(strategy)}。正在過濾並同步歷史紀錄...`;
+    appendChat('System', 'received', connectMsg, 'user');
   };
 
   eventSource.onerror = (err) => {
@@ -805,11 +1128,27 @@ function setupEvents() {
     });
   }
 
+  const langSelect = document.getElementById('lang-select');
+  if (langSelect) {
+    langSelect.addEventListener('change', (e) => {
+      applyLanguage(e.target.value);
+    });
+  }
+
   setupNotificationButton();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   setupEvents();
+  
+  // Load saved language or default to 'zh'
+  const savedLang = localStorage.getItem('agent_office_lang') || 'zh';
+  const langSelect = document.getElementById('lang-select');
+  if (langSelect) {
+    langSelect.value = savedLang;
+  }
+  applyLanguage(savedLang);
+
   connectStream('none');
   initWandering();
 });

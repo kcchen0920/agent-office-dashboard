@@ -21,12 +21,12 @@
   <header>
     <div class="logo">
       <div class="logo-icon"></div>
-      <span>AI AGENT OFFICE</span>
+      <span data-i18n="logo-title">AI AGENT OFFICE</span>
     </div>
     <div class="controls">
       <!-- Token Limit Selector -->
       <div class="limit-selector-container">
-        <label for="limit-select" class="selector-label">警報閾值:</label>
+        <label for="limit-select" class="selector-label" data-i18n="limit-label">警報閾值:</label>
         <select id="limit-select" class="theme-select">
           <option value="100000">100K Tokens</option>
           <option value="500000">500K Tokens</option>
@@ -37,24 +37,34 @@
 
       <!-- Strategy Selector -->
       <div class="strategy-selector-container">
-        <label for="strategy-select" class="selector-label">Token 優化策略:</label>
+        <label for="strategy-select" class="selector-label" data-i18n="strategy-label">Token 優化策略:</label>
         <select id="strategy-select" class="theme-select">
-          <option value="none">⛔ 原始歷史 (Full History)</option>
-          <option value="window">✂️ 滑動窗口 (Sliding Window)</option>
-          <option value="prune">🧹 工具輸出裁減 (Tool Pruning)</option>
-          <option value="summarize">📝 記憶摘要化 (Summarization)</option>
-          <option value="cache">⚡ Gemini 脈絡快取 (Context Cache)</option>
+          <option value="none" data-i18n="opt-none">⛔ 原始歷史 (Full History)</option>
+          <option value="window" data-i18n="opt-window">✂️ 滑動窗口 (Sliding Window)</option>
+          <option value="prune" data-i18n="opt-prune">🧹 工具輸出裁減 (Tool Pruning)</option>
+          <option value="summarize" data-i18n="opt-summarize">📝 記憶摘要化 (Summarization)</option>
+          <option value="cache" data-i18n="opt-cache">⚡ Gemini 脈絡快取 (Context Cache)</option>
+        </select>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-container">
+        <label for="lang-select" class="selector-label" data-i18n="lang-label">語言 / Lang:</label>
+        <select id="lang-select" class="theme-select">
+          <option value="zh" selected>繁體中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
         </select>
       </div>
 
       <!-- Desktop Notify Button -->
       <button id="notify-btn" class="btn btn-notify">
-        <span id="notify-btn-text">🔔 啟用瀏覽器桌面通知</span>
+        <span id="notify-btn-text" data-i18n="notify-btn-text">🔔 啟用瀏覽器桌面通知</span>
       </button>
 
       <div class="status-badge connection-badge" id="conn-badge">
         <div class="status-dot idle" id="connection-dot"></div>
-        <span id="connection-status-text">🔴 未連線</span>
+        <span id="connection-status-text" data-i18n="connection-status-text">🔴 未連線</span>
       </div>
     </div>
   </header>
@@ -65,8 +75,8 @@
     <!-- Left Sidebar: Active Agents -->
     <aside class="sidebar">
       <div class="section-title">
-        <span>辦公室成員</span>
-        <span class="agent-count">4 名</span>
+        <span data-i18n="sidebar-members-title">辦公室成員</span>
+        <span class="agent-count" data-i18n="agent-count">4 名</span>
       </div>
 
       <!-- Agent 1: Manager -->
@@ -87,7 +97,7 @@
             </div>
             <div class="agent-meta">
               <h3>Antigravity</h3>
-              <p>Manager / 主代理</p>
+              <p data-i18n="role-manager">Manager / 主代理</p>
             </div>
           </div>
           <div class="status-badge">
@@ -97,11 +107,11 @@
         </div>
         <div class="agent-stats">
           <div class="stat-item">
-            <span class="stat-label">呼叫次數</span>
+            <span class="stat-label" data-i18n="stats-calls">呼叫次數</span>
             <span class="stat-value" id="stats-calls-manager">0</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-label" data-i18n="stats-tokens">Tokens 消耗</span>
             <span class="stat-value" id="stats-tokens-manager">0</span>
           </div>
         </div>
@@ -126,7 +136,7 @@
             </div>
             <div class="agent-meta">
               <h3>research</h3>
-              <p>Researcher / 研究代理</p>
+              <p data-i18n="role-researcher">Researcher / 研究代理</p>
             </div>
           </div>
           <div class="status-badge">
@@ -136,11 +146,11 @@
         </div>
         <div class="agent-stats">
           <div class="stat-item">
-            <span class="stat-label">呼叫次數</span>
+            <span class="stat-label" data-i18n="stats-calls">呼叫次數</span>
             <span class="stat-value" id="stats-calls-researcher">0</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-label" data-i18n="stats-tokens">Tokens 消耗</span>
             <span class="stat-value" id="stats-tokens-researcher">0</span>
           </div>
         </div>
@@ -164,7 +174,7 @@
             </div>
             <div class="agent-meta">
               <h3>self</h3>
-              <p>Developer / 開發代理</p>
+              <p data-i18n="role-developer">Developer / 開發代理</p>
             </div>
           </div>
           <div class="status-badge">
@@ -174,11 +184,11 @@
         </div>
         <div class="agent-stats">
           <div class="stat-item">
-            <span class="stat-label">呼叫次數</span>
+            <span class="stat-label" data-i18n="stats-calls">呼叫次數</span>
             <span class="stat-value" id="stats-calls-developer">0</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-label" data-i18n="stats-tokens">Tokens 消耗</span>
             <span class="stat-value" id="stats-tokens-developer">0</span>
           </div>
         </div>
@@ -199,7 +209,7 @@
             </div>
             <div class="agent-meta">
               <h3>qa_agent</h3>
-              <p>QA Tester / 測試代理</p>
+              <p data-i18n="role-qa">QA Tester / 測試代理</p>
             </div>
           </div>
           <div class="status-badge">
@@ -209,11 +219,11 @@
         </div>
         <div class="agent-stats">
           <div class="stat-item">
-            <span class="stat-label">呼叫次數</span>
+            <span class="stat-label" data-i18n="stats-calls">呼叫次數</span>
             <span class="stat-value" id="stats-calls-qa">0</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">Tokens 消耗</span>
+            <span class="stat-label" data-i18n="stats-tokens">Tokens 消耗</span>
             <span class="stat-value" id="stats-tokens-qa">0</span>
           </div>
         </div>
@@ -222,24 +232,24 @@
       <!-- Token Savings Card -->
       <div class="savings-card">
         <div class="section-title savings-header">
-          <span>Token 優化效益</span>
+          <span data-i18n="savings-title">Token 優化效益</span>
           <span id="savings-rate">0%</span>
         </div>
         <div class="agent-stats savings-stats">
           <div class="savings-stat-row">
-            <span class="savings-label">原始消耗:</span>
+            <span class="savings-label" data-i18n="savings-raw">原始消耗:</span>
             <span id="stats-raw-tokens" class="savings-value">0</span>
           </div>
           <div class="savings-stat-row">
-            <span class="savings-label">優化實際:</span>
+            <span class="savings-label" data-i18n="savings-optimized">優化實際:</span>
             <span id="stats-optimized-tokens" class="savings-value optimized">0</span>
           </div>
           <div class="savings-stat-row">
-            <span class="savings-label">節省 Tokens:</span>
+            <span class="savings-label" data-i18n="savings-saved">節省 Tokens:</span>
             <span id="stats-saved-tokens" class="savings-value saved">0</span>
           </div>
           <div class="savings-stat-row cost-row">
-            <span class="savings-label">預估節省金額:</span>
+            <span class="savings-label" data-i18n="savings-cost">預估節省金額:</span>
             <span id="stats-saved-cost" class="savings-value cost">$0.00 USD</span>
           </div>
         </div>
@@ -251,7 +261,7 @@
       <!-- 1. Office Map -->
       <div class="graph-container">
         <div class="section-title graph-title">
-          <span>虛擬方塊辦公模擬器 (Voxel Office Simulator)</span>
+          <span data-i18n="simulator-title">虛擬方塊辦公模擬器 (Voxel Office Simulator)</span>
         </div>
         <svg class="graph-svg" id="topology-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
           <!-- Definitions for markers, patterns and gradients -->
@@ -557,11 +567,11 @@
 
           <!-- Office labels (Vibrant, high legibility) -->
           <g class="room-labels">
-            <text x="300" y="95" class="room-label">會議室 / 經理席</text>
-            <text x="100" y="113" class="room-label">資料庫與研究</text>
-            <text x="500" y="113" class="room-label">程式開發區</text>
-            <text x="335" y="194" class="room-label">測試與除錯中心</text>
-            <text x="100" y="174" class="room-label">休閒茶水間</text>
+            <text x="300" y="95" class="room-label" data-i18n="room-meeting">會議室 / 經理席</text>
+            <text x="100" y="113" class="room-label" data-i18n="room-research">資料庫與研究</text>
+            <text x="500" y="113" class="room-label" data-i18n="room-dev">程式開發區</text>
+            <text x="335" y="194" class="room-label" data-i18n="room-qa">測試與除錯中心</text>
+            <text x="100" y="174" class="room-label" data-i18n="room-lounge">休閒茶水間</text>
           </g>
 
           <!-- Interactive Character Elements (without outer borders, styled as corporate voxel agents) -->
@@ -711,26 +721,26 @@
       <!-- 2. Kanban Board -->
       <section class="kanban-section">
         <div class="section-title">
-          <span>任務分配看板 (Kanban)</span>
+          <span data-i18n="kanban-title">任務分配看板 (Kanban)</span>
         </div>
         <div class="kanban-board">
           <div class="kanban-column" id="col-todo">
             <div class="column-header">
-              <span>待處理 (To Do)</span>
+              <span data-i18n="kanban-todo">待處理 (To Do)</span>
               <span class="column-count" id="count-todo">0</span>
             </div>
           </div>
 
           <div class="kanban-column" id="col-progress">
             <div class="column-header">
-              <span>進行中 (In Progress)</span>
+              <span data-i18n="kanban-progress">進行中 (In Progress)</span>
               <span class="column-count" id="count-progress">0</span>
             </div>
           </div>
 
           <div class="kanban-column" id="col-done">
             <div class="column-header">
-              <span>已完成 (Done)</span>
+              <span data-i18n="kanban-done">已完成 (Done)</span>
               <span class="column-count" id="count-done">0</span>
             </div>
           </div>
@@ -743,7 +753,7 @@
       <!-- Chat Container -->
       <div class="chat-container">
         <div class="chat-header">
-          <span>內部對話頻道 (Chat Room)</span>
+          <span data-i18n="chat-title">內部對話頻道 (Chat Room)</span>
           <span class="chat-live-badge">● Live</span>
         </div>
         <div class="chat-messages" id="chat-messages-container">
@@ -777,12 +787,12 @@
       </div>
 
       <div class="modal-section">
-        <span class="stat-label">系統提示詞 (System Instructions)</span>
+        <span class="stat-label" data-i18n="modal-instructions-title">系統提示詞 (System Instructions)</span>
         <div class="system-prompt-box" id="modal-prompt"></div>
       </div>
 
       <div class="modal-section">
-        <span class="stat-label">授權工具範圍 (Authorized Tool Permissions)</span>
+        <span class="stat-label" data-i18n="modal-tools-title">授權工具範圍 (Authorized Tool Permissions)</span>
         <div id="modal-tools" class="modal-tools-container"></div>
       </div>
     </div>
